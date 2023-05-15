@@ -15,7 +15,9 @@ class List extends Component {
   }
 
   closeAddCardForm(e) {
-    if (!e.target.matches('.add-card>button[type="button"]')) return;
+    if (!e.target.closest('.button-holder>button[type="button"]')) return;
+
+    console.log(e.target);
 
     const { id: targetId } = e.target.closest('.list-wrapper').dataset;
     const newLists = this.state.lists.map(list => (list.id === +targetId ? { ...list, isAdding: false } : list));
@@ -61,11 +63,13 @@ class List extends Component {
             <ul class="list">
               ${cards.map(card => new Card(card).render()).join('')}
             </ul>
-            <button class="add-card-btn ${isAdding ? 'hidden' : ''}">➕ Add a card</button>
+            <button class="add-card-btn ${isAdding ? 'hidden' : ''}">+ Add a card</button>
             <form class="add-form add-card ${isAdding ? '' : 'hidden'}">
               <input placeholder="Enter a new title."></input>
-              <button type="submit">Add list</button>
-              <button type="button">✖️</button>
+              <div class="button-holder">
+                <button type="submit">Add card</button>
+                <button type="button"><i class="bi bi-x"></i></button>
+              </div>
             </form>
           </div>
         </div>`).join('')}
