@@ -1,0 +1,184 @@
+@import url(//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSansNeo.css);
+
+/* CSS color variation */
+:root {
+  --color-white: #f4f5f9;
+  --color-gray: #ebedf1;
+  --color-dark-gray: #dddfe6;
+  --color-black: #2c3758;
+  --color-point-red: #f1404b;
+}
+
+/* hidden class */
+.hidden {
+  display: none;
+}
+
+/* Nomalize */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  font-size: 16px;
+  font-family: 'Spoqa Han Sans Neo', 'sans-serif';
+  font-weight: 400;
+}
+
+ol,
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+i {
+  color: var(--color-black)
+}
+
+/* Component styles */
+#root {
+  height: 100vh;
+  background-color: var(--color-white);
+}
+
+header {
+  background-color: var(--color-black);
+  padding: 20px 20px;
+  color: var(--color-white);
+}
+
+header>a {
+  color: var(--color-gray);
+}
+
+a:visited {
+  color: var(--color-gray);
+}
+
+header>h1 {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+header>p {
+  font-style: italic;
+  font-size: 16px;
+  color: var(--color-gray);
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.board {
+  display: flex;
+  overflow-x: auto;
+  height: calc(100vh - 45px);
+  padding: 15px;
+}
+
+.list-wrapper {
+  height: 100%;
+}
+
+.list-content {
+  background-color: var(--color-gray);
+  border-radius: 2px;
+  width: 300px;
+  padding: 10px;
+  box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.3);
+  margin: 5px;
+  cursor: pointer;
+}
+
+.list-header {
+  margin: 0 0 10px;
+}
+
+.list-header>h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-black);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list-content>ul>.card {
+  margin: 10px 0;
+  border-radius: 2px;
+  box-shadow: 1px 1px 5px 0 rgba(98, 72, 122, 0.3);
+  background-color: var(--color-white);
+  padding: 5px;
+}
+
+.list-content>ul>.card>div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-height: 55px;
+}
+
+.list-content>ul>.card>div>.card-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 16px;
+  color: var(--color-black)
+}
+
+.list-content>ul>.card>div>i {
+  font-size: 12px;
+  visibility: hidden;
+}
+
+.list-content>ul>.card:hover {
+  background-color: var(--color-dark-gray);
+}
+
+.list-content>ul>.card:hover>div>i {
+  visibility: visible;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: transparent;
+  color: var(--color-black);
+  font-weight: 500;
+}
+
+.empty:hover {
+  background-color: var(--color-gray);
+}
+
+.add-list {
+  cursor: auto;
+}
+
+.add-form>button[type="submit"] {
+  padding: 5px;
+  border-radius: 2px;
+  color: var(--color-white);
+  background-color: var(--color-black);
+}
+
+.add-form>button[type="button"] {
+  margin-top: 5px;
+}
+
+.add-form>input {
+  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
+  display: block;
+  resize: none;
+  width: 100%;
+  margin: 0 0 5px 0;
+  border: 1.5px solid var(--color-black);
+  border-radius: 2px;
+}
