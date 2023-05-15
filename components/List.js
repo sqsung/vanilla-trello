@@ -63,7 +63,12 @@ class List extends Component {
             <ul class="list">
               ${cards.map(card => new Card(card).render()).join('')}
             </ul>
-            <button class="add-card-btn ${isAdding ? 'hidden' : ''}">+ Add a card</button>
+            <div class="add-card-btn-holder ${isAdding ? 'hidden' : ''}">
+              <button class="add-card-btn">
+                <i class="bi bi-plus-square"></i>
+                Add a card
+              </button>
+            </div>
             <form class="add-form add-card ${isAdding ? '' : 'hidden'}">
               <input placeholder="Enter a new title."></input>
               <div class="button-holder">
