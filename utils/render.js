@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import diff from './diff.js';
 import eventStorage from './eventStorage.js';
 

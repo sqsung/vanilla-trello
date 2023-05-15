@@ -3,18 +3,18 @@ import Component from '../core/Component.js';
 
 class AddListButton extends Component {
   displayAddListForm(e) {
-    if (e.target.closest('.empty')) this.setState({ isAddingList: true });
+    if (e.target.closest('.add-list-btn')) this.setState({ isAddingList: true });
   }
 
   closeAddListForm(e) {
-    if (!e.target.matches('.add-list>button[type="button"]')) return;
+    if (!e.target.matches('.bi, .button-holder>button[type="button"]')) return;
 
     this.setState({ isAddingList: false });
   }
 
   createNewList(e) {
     e.preventDefault();
-    if (!e.target.matches('.add-list')) return;
+    if (!e.target.closest('.button-holder')) return;
 
     const newListTitle = e.target.firstElementChild.value.trim();
     if (!newListTitle) return;
@@ -37,14 +37,18 @@ class AddListButton extends Component {
 
     return `
       <div class="list-wrapper">
-        <div class="list-content add-list ${isAddingList ? '' : 'empty'}">
-          <div class="add-list-btn ${isAddingList ? 'hidden' : ''}">➕ Add another list</div>
-          <form class="add-form add-list ${isAddingList ? '' : 'hidden'}">
-            <textarea placeholder="Enter a new title."></textarea>
-            <button type="submit">Add list</button>
-            <button type="button">✖️</button>
-          </form>
-        </div>
+        <div class="list-content add-list ${isAddingList ? 'adding' : ''}">
+          <button class="add-list-btn ${isAddingList ? 'hidden' : ''}"">
+            <span>+ Add another list</span>
+          </button>
+          <form class="add-form add-list-form ${isAddingList ? '' : 'hidden'}">
+            <input placeholder="Enter a new title."></input>
+            <div class="button-holder">
+              <button type="submit">Add list</button>
+              <button type="button"><i class="bi bi-x"></i></button>
+            </div>
+        </form>
+         </div>
       </div>`;
   }
 }

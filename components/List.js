@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import Component from '../core/Component.js';
 import Card from './Card.js';
 import AddListButton from './AddListButton.js';
@@ -5,8 +6,6 @@ import AddListButton from './AddListButton.js';
 class List extends Component {
   displayAddCardForm(e) {
     if (!e.target.matches('.add-card-btn')) return;
-
-    console.log(e.target);
 
     const { id: targetId } = e.target.closest('.list-wrapper').dataset;
     const newLists = this.state.lists.map(list => (list.id === +targetId ? { ...list, isAdding: true } : list));
@@ -16,8 +15,6 @@ class List extends Component {
 
   closeAddCardForm(e) {
     if (!e.target.closest('.button-holder>button[type="button"]')) return;
-
-    console.log(e.target);
 
     const { id: targetId } = e.target.closest('.list-wrapper').dataset;
     const newLists = this.state.lists.map(list => (list.id === +targetId ? { ...list, isAdding: false } : list));

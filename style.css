@@ -3,8 +3,10 @@
 /* CSS color variation */
 :root {
   --color-white: #f4f5f9;
+  --color-light-gray: rgb(253, 253, 253);
   --color-gray: #ebedf1;
   --color-dark-gray: #dddfe6;
+  --color-light-black: #688ba5;
   --color-black: #2c3758;
   --color-point-red: #f1404b;
 }
@@ -47,12 +49,19 @@ header {
   height: 100px;
 }
 
-header>a {
+a {
   color: var(--color-gray);
+  text-decoration: none;
+  transition: 0.2s ease-in-out;
 }
 
 a:visited {
   color: var(--color-gray);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 header>h1 {
@@ -81,15 +90,18 @@ button {
   overflow-x: auto;
   height: calc(100vh - 100px);
   padding: 15px;
+  background: linear-gradient(to top, #123057 0%, #6586a0 100%);
 }
 
 .card {
   cursor: pointer;
 }
 
+
 .list-wrapper {
   height: 100%;
 }
+
 
 .list-content {
   background-color: var(--color-gray);
@@ -151,16 +163,27 @@ button {
   visibility: visible;
 }
 
-.empty {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: transparent;
-  color: var(--color-black);
-  font-weight: 500;
+.add-list {
+  background-color: var(--color-light-black);
+  transition: 0.1s ease-in-out;
 }
 
-.empty:hover {
+.add-list-btn>span {
+  color: var(--color-gray);
+  font-size: 14px;
+}
+
+.add-list:hover {
+  background-color: var(--color-gray);
+  transition: 0.1s ease-in-out;
+}
+
+.add-list:hover>.add-list-btn>span {
+  color: var(--color-black);
+}
+
+.adding>.add-form,
+.adding {
   background-color: var(--color-gray);
 }
 
@@ -181,6 +204,8 @@ button {
   display: flex;
   gap: 5px;
   align-items: middle;
+
+  border: 1px solid red;
 }
 
 .button-holder>button[type="submit"] {

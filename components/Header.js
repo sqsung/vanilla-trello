@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import Component from '../core/Component.js';
 
 class Header extends Component {
@@ -6,7 +7,7 @@ class Header extends Component {
     return `
       <header>
         <h1>🌐 Trello</h1>
-        <p>Made with Vanilla JavaScript only by <a href='https://github.com/sqsung' target='_blank' rel='noopener noreferrer'>@sqsung</a></p>
+        <p>Made with Vanilla JavaScript only, by <a href='https://github.com/sqsung' target='_blank' rel='noopener noreferrer'>@sqsung</a></p>
       </header>
     `;
   }

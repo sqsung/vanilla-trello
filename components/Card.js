@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import Component from '../core/Component.js';
 
 class Card extends Component {

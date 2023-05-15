@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 import Component from './core/Component.js';
 import Header from './components/Header.js';
 import Board from './components/Board.js';
