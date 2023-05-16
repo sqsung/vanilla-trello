@@ -1,7 +1,6 @@
 /* eslint-disable import/extensions */
 import Component from './core/Component.js';
-import Header from './components/Header.js';
-import Board from './components/Board.js';
+import { Header, Board, Modal } from './components/index.js';
 
 class App extends Component {
   state = {
@@ -36,6 +35,7 @@ class App extends Component {
       },
     ],
     isAddingList: false,
+    modalInfo: { open: false, listId: null, cardId: null },
   };
 
   // prettier-ignore
@@ -43,6 +43,7 @@ class App extends Component {
     return `
       ${new Header().render()}
       ${new Board(this).render()}
+      ${new Modal(this).render()}
     `
   }
 }

@@ -88,6 +88,27 @@ button {
   background: linear-gradient(to top, #123057 0%, #6586a0 100%);
 }
 
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.583);
+  z-index: 999;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.editor {
+  background-color: var(--color-white);
+  width: 700px;
+  height: 500px;
+  border-radius: 5px;
+  display: flex;
+}
+
 .list-wrapper {
   height: 100%;
 }
@@ -97,7 +118,7 @@ button {
   border-radius: 2px;
   width: 300px;
   padding: 10px;
-  box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.613);
   margin: 5px;
 }
 

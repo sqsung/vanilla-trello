@@ -1,7 +1,6 @@
 /* eslint-disable import/extensions */
 import Component from '../core/Component.js';
-import Card from './Card.js';
-import AddListButton from './AddListButton.js';
+import { Card, AddListButton } from './index.js';
 
 class List extends Component {
   displayAddCardForm(e) {
