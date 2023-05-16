@@ -34,7 +34,9 @@ class List extends Component {
 
     const { id: targetId } = e.target.closest('.list-wrapper').dataset;
 
-    const newCard = { cardId: 999, cardTitle: newCardTitle, description: '' };
+    const nextCardId = Math.max(...this.state.lists[targetId].cards.map(({ cardId }) => cardId)) + 1;
+
+    const newCard = { cardId: nextCardId, cardTitle: newCardTitle, description: '' };
     const updatedLists = this.state.lists.map(list =>
       list.id === +targetId ? { ...list, cards: [...list.cards, newCard] } : list
     );

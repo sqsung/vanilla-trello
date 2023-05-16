@@ -15,8 +15,6 @@ class AddListButton extends Component {
   createNewList(e) {
     e.preventDefault();
 
-    console.log(e.target);
-
     if (!e.target.closest('.add-list-form')) return;
 
     const newListTitle = e.target.firstElementChild.value.trim();
