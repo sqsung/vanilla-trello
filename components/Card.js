@@ -41,9 +41,22 @@ class Card extends Component {
     this.setState({ lists: updatedList });
   }
 
+  deleteCard(e) {
+    if (!e.target.matches('.delete-card-btn')) return;
+
+    const [targetListId, targetCardId] = e.target.closest('.card').dataset.id.split('-');
+
+    const updatedList = this.state.lists.map(list =>
+      list.id !== +targetListId ? list : { ...list, cards: list.cards.filter(({ cardId }) => cardId !== +targetCardId) }
+    );
+
+    this.setState({ lists: updatedList });
+  }
+
   render(card, listId) {
     this.addEvent('click', '.bi-pencil', this.openTitleEditor.bind(this.props));
     this.addEvent('submit', '.card-editor-form', this.editCardTitle.bind(this.props));
+    this.addEvent('click', '.delete-card-btn', this.deleteCard.bind(this.props));
 
     const { cardId, cardTitle, description, isEditing } = card;
 
@@ -51,7 +64,10 @@ class Card extends Component {
       <li data-id="${`${listId}-${cardId}`}" class="card" draggable="true">
         <div>
           <span class="card-title ${isEditing ? 'hidden' : ''}">${cardTitle}</span>
-          <i class="bi bi-pencil ${isEditing ? 'hidden' : ''}""></i>
+          <div class="card-icon-holder">
+            <i class="bi bi-pencil ${isEditing ? 'hidden' : ''}""></i>
+            <i class="bi bi-x delete-card-btn"></i>
+          </div>
         </div>
         <form class="card-editor-form">
           <input value="${cardTitle}" class="${!isEditing ? 'hidden' : ''}" />

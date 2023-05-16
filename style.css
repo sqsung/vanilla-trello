@@ -93,19 +93,6 @@ button {
   background: linear-gradient(to top, #123057 0%, #6586a0 100%);
 }
 
-.card {
-  cursor: pointer;
-}
-
-.bi-pencil {
-  padding: 3px;
-  border-radius: 3px;
-}
-
-.bi-pencil:hover {
-  background-color: #c6c8ceba;
-}
-
 .list-wrapper {
   height: 100%;
 }
@@ -142,6 +129,7 @@ button {
   box-shadow: 1px 1px 5px 0 rgba(98, 72, 122, 0.3);
   background-color: var(--color-white);
   padding: 10px;
+  cursor: pointer;
 }
 
 .list-content>ul>.card>div {
@@ -161,16 +149,34 @@ button {
   color: var(--color-black)
 }
 
-.list-content>ul>.card>div>i {
+.card-icon-holder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-icon-holder>i {
   font-size: 12px;
   visibility: hidden;
+  padding: 3px;
+  border-radius: 3px;
+  transition: 0.1s ease-in-out;
+}
+
+.card-icon-holder>i:hover {
+  background-color: var(--color-gray);
+  color: var(--color-black);
+}
+
+.card-icon-holder>.bi-x {
+  font-size: 20px;
 }
 
 .list-content>ul>.card:hover {
-  background-color: var(--color-dark-gray);
+  background-color: var(--color-light-gray);
 }
 
-.list-content>ul>.card:hover>div>i {
+.list-content>ul>.card:hover>div>div>i {
   visibility: visible;
 }
 
@@ -191,7 +197,7 @@ button {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   border: 1px solid var(--color-black);
   border-radius: 5px;

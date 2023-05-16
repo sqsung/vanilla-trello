@@ -95,7 +95,9 @@ class List extends Component {
               <input placeholder="Enter a new title."></input>
               <div class="button-holder">
                 <button type="submit">Add card</button>
-                <button type="button"><i class="bi bi-x"></i></button>
+                <button type="button">
+                  <i class="bi bi-x"></i>
+                </button>
               </div>
             </form>
           </div>
