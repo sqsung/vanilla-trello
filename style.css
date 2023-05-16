@@ -11,11 +11,6 @@
   --color-point-red: #f1404b;
 }
 
-/* hidden class */
-.hidden {
-  display: none;
-}
-
 /* Nomalize */
 * {
   box-sizing: border-box;
@@ -285,4 +280,9 @@ button {
   margin: 0 0 5px 0;
   border: 1.5px solid var(--color-black);
   border-radius: 2px;
+}
+
+/* hidden class */
+.hidden {
+  display: none;
 }

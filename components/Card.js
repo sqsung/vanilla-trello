@@ -64,9 +64,9 @@ class Card extends Component {
       <li data-id="${`${listId}-${cardId}`}" class="card" draggable="true">
         <div>
           <span class="card-title ${isEditing ? 'hidden' : ''}">${cardTitle}</span>
-          <div class="card-icon-holder">
-            <i class="bi bi-pencil ${isEditing ? 'hidden' : ''}""></i>
-            <i class="bi bi-x delete-card-btn"></i>
+          <div class="card-icon-holder ${isEditing ? 'hidden' : ''}">
+            <i class="bi bi-pencil"></i>
+            <i class="bi bi-x delete-card-btn ${isEditing ? 'hidden' : ''}"></i>
           </div>
         </div>
         <form class="card-editor-form">
