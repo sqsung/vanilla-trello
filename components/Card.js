@@ -53,10 +53,20 @@ class Card extends Component {
     this.setState({ lists: updatedList });
   }
 
+  openModal(e) {
+    if (!e.target.closest('.card')) return;
+    if (e.target.closest('.card-icon-holder') || e.target.closest('.card-editor-form')) return;
+
+    const [targetListId, targetCardId] = e.target.closest('.card').dataset.id.split('-');
+
+    this.setState({ modalInfo: { open: true, listId: targetListId, cardId: targetCardId } });
+  }
+
   render(card, listId) {
     this.addEvent('click', '.bi-pencil', this.openTitleEditor.bind(this.props));
     this.addEvent('submit', '.card-editor-form', this.editCardTitle.bind(this.props));
     this.addEvent('click', '.delete-card-btn', this.deleteCard.bind(this.props));
+    this.addEvent('click', '.card', this.openModal.bind(this.props));
 
     const { cardId, cardTitle, description, isEditing } = card;
 
