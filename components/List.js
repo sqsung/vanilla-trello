@@ -47,6 +47,9 @@ class List extends Component {
 
     const deleteId = e.target.closest('.list-wrapper').dataset.id;
     const updatedLists = this.state.lists.filter(list => list.id !== +deleteId);
+    const title = e.target.closest('.list-header').firstElementChild.textContent;
+
+    if (!window.confirm(`Do you really want to delete '${title}' list?`)) return;
 
     this.setState({ lists: updatedLists });
   }
