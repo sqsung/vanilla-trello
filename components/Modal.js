@@ -11,13 +11,21 @@ class Modal extends Component {
   render() {
     this.addEvent('click', '.modal', this.closeModal.bind(this.props));
 
-    const { modalInfo } = this.props.state;
+    const { state } = this.props;
+    const { open, listId, cardId } = state.modalInfo;
+
+    const list = state.lists.filter(list => list.id === +listId)[0];
+    const card = list.cards.filter(card => card.cardId === +cardId)[0];
 
     return `
-      <div class="modal ${modalInfo.open ? '' : 'hidden'}">
+      <div class="modal ${open ? '' : 'hidden'}">
         <div class="editor">
-          <div>
-            Check!
+          <div class="editor-header">
+            <div class="title-holder">
+              <i class="bi bi-list-task"></i>
+              <span>${card.cardTitle}</span>
+            </div>
+            <i class="bi bi-x"></i>
           </div>
         </div>
       </div>

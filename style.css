@@ -107,6 +107,35 @@ button {
   height: 500px;
   border-radius: 5px;
   display: flex;
+  padding: 20px;
+}
+
+.editor-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.editor-header>.title-holder {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  height: fit-content;
+  gap: 10px;
+}
+
+.editor-header>.title-holder>span {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.editor-header>.title-holder>i {
+  font-size: 28px;
+}
+
+.editor-header>.bi-x {
+  font-size: 28px;
+  height: fit-content;
 }
 
 .list-wrapper {
