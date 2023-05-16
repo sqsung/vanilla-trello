@@ -114,6 +114,8 @@ button {
 
 .list-header {
   margin: 0 0 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .list-header>h2 {
@@ -123,6 +125,7 @@ button {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin: 15px 0;
 }
 
 .list-content>ul>.card {
@@ -204,8 +207,6 @@ button {
   display: flex;
   gap: 5px;
   align-items: middle;
-
-  border: 1px solid red;
 }
 
 .button-holder>button[type="submit"] {
@@ -227,6 +228,7 @@ button {
   font-size: 20px;
   display: flex;
   transition: 0.1s ease-in-out;
+  cursor: pointer;
 }
 
 .bi-x:hover {

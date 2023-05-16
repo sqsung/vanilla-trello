@@ -3,7 +3,7 @@ import Component from '../core/Component.js';
 
 class AddListButton extends Component {
   displayAddListForm(e) {
-    if (e.target.closest('.add-list-btn')) this.setState({ isAddingList: true });
+    if (e.target.closest('.add-list')) this.setState({ isAddingList: true });
   }
 
   closeAddListForm(e) {
@@ -14,7 +14,10 @@ class AddListButton extends Component {
 
   createNewList(e) {
     e.preventDefault();
-    if (!e.target.closest('.button-holder')) return;
+
+    console.log(e.target);
+
+    if (!e.target.closest('.add-list-form')) return;
 
     const newListTitle = e.target.firstElementChild.value.trim();
     if (!newListTitle) return;
@@ -33,7 +36,7 @@ class AddListButton extends Component {
 
     this.addEvent('click', '.empty', this.displayAddListForm.bind(this.props));
     this.addEvent('click', '.add-list>button[type="button"]', this.closeAddListForm.bind(this.props));
-    this.addEvent('submit', '.add-list', this.createNewList.bind(this.props));
+    this.addEvent('submit', '.add-list-form', this.createNewList.bind(this.props));
 
     return `
       <div class="list-wrapper">
