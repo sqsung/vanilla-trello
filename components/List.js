@@ -72,7 +72,7 @@ class List extends Component {
               <i class="bi bi-x delete-list-btn"></i>
             </div>
             <ul class="list">
-              ${cards.map(card => new Card(card).render()).join('')}
+              ${cards.map(card => new Card(this.props).render(card)).join('')}
             </ul>
             <div class="add-card-btn-holder ${isAdding ? 'hidden' : ''}">
               <button class="add-card-btn">
