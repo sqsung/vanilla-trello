@@ -34,11 +34,20 @@ class List extends Component {
 
     const { id: targetId } = e.target.closest('.list-wrapper').dataset;
 
-    const nextCardId = Math.max(...this.state.lists[targetId].cards.map(({ cardId }) => cardId)) + 1;
-
-    const newCard = { cardId: nextCardId, cardTitle: newCardTitle, description: '' };
     const updatedLists = this.state.lists.map(list =>
-      list.id === +targetId ? { ...list, cards: [...list.cards, newCard] } : list
+      list.id === +targetId
+        ? {
+            ...list,
+            cards: [
+              ...list.cards,
+              {
+                cardId: Math.max(...list.cards.map(({ cardId }) => cardId)) + 1 || 0,
+                cardTitle: newCardTitle,
+                description: '',
+              },
+            ],
+          }
+        : list
     );
 
     this.setState({ lists: updatedLists });
@@ -74,7 +83,7 @@ class List extends Component {
               <i class="bi bi-x delete-list-btn"></i>
             </div>
             <ul class="list">
-              ${cards.map(card => new Card(this.props).render(card)).join('')}
+              ${cards.map(card => new Card(this.props).render(card, id)).join('')}
             </ul>
             <div class="add-card-btn-holder ${isAdding ? 'hidden' : ''}">
               <button class="add-card-btn">
