@@ -97,11 +97,18 @@ button {
   cursor: pointer;
 }
 
+.bi-pencil {
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.bi-pencil:hover {
+  background-color: #c6c8ceba;
+}
 
 .list-wrapper {
   height: 100%;
 }
-
 
 .list-content {
   background-color: var(--color-gray);
