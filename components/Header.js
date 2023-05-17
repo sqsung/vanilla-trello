@@ -6,7 +6,10 @@ class Header extends Component {
   render() {
     return `
       <header>
-        <h1>🌐 Vanilla Trello</h1>
+        <div class="logo-wrapper">
+          <i class="bi bi-trello"></i>
+          <h1>Vanilla Trello</h1>
+        </div>
         <p>Made with Vanilla JavaScript only, by <a href='https://github.com/sqsung' target='_blank' rel='noopener noreferrer'>@sqsung</a></p>
       </header>
     `;
