@@ -59,7 +59,17 @@ a:hover {
   text-decoration: underline;
 }
 
-header>h1 {
+.logo-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.logo-wrapper>i {
+  font-size: 25px;
+  color: var(--color-white);
+}
+
+.logo-wrapper>h1 {
   margin: 0;
   font-size: 25px;
   font-weight: 800;
@@ -139,6 +149,10 @@ button {
 }
 
 .list-wrapper {
+  height: 100%;
+}
+
+.list {
   height: 100%;
 }
 
@@ -253,6 +267,11 @@ button {
 .add-list {
   background-color: var(--color-light-black);
   transition: 0.1s ease-in-out;
+}
+
+.add-list-btn {
+  width: 100%;
+  display: flex;
 }
 
 .add-list-btn>span {
