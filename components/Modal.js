@@ -3,7 +3,7 @@ import Component from '../core/Component.js';
 
 class Modal extends Component {
   closeModal(e) {
-    if (!e.target.matches('.modal')) return;
+    if (!e.target.matches('.modal, .close-modal-btn')) return;
 
     this.setState({ modalInfo: { open: false, listId: null, cardId: null, isTyping: false } });
   }
@@ -61,7 +61,7 @@ class Modal extends Component {
               <i class="bi bi-list-task"></i>
               <span>${card?.cardTitle ? card.cardTitle : ''} <span>in ${list.title}</span></span>
             </div>
-            <i class="bi bi-x"></i>
+            <i class="bi bi-x close-modal-btn"></i>
           </div>
           <div class="description-wrapper">
             <div class="description-header">
