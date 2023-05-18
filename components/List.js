@@ -4,19 +4,20 @@ import Card from './Card.js';
 
 class List extends Component {
   displayAddCardForm(e) {
-    if (!e.target.matches('.add-card-btn, .bi-plus-square')) return;
+    if (!e.target.closest('.add-card-btn-holder')) return;
 
     const { id: targetId } = e.target.closest('.list-wrapper').dataset;
-    const newLists = this.state.lists.map(list => (list.id === +targetId ? { ...list, isAdding: true } : list));
+    const newLists = this.state.lists.map(list =>
+      list.id === +targetId ? { ...list, isAdding: true } : { ...list, isAdding: false }
+    );
 
-    this.setState({ lists: newLists });
+    this.setState({ lists: newLists, isAddingList: false });
   }
 
   closeAddCardForm(e) {
-    if (!e.target.closest('.close-card-form-btn')) return;
+    if (!e.target.closest('.close-card-form-btn') && !e.target.matches('.list-wrapper')) return;
 
-    const { id: targetId } = e.target.closest('.list-wrapper').dataset;
-    const newLists = this.state.lists.map(list => (list.id === +targetId ? { ...list, isAdding: false } : list));
+    const newLists = this.state.lists.map(list => ({ ...list, isAdding: false }));
 
     this.setState({ lists: newLists });
   }
@@ -65,12 +66,12 @@ class List extends Component {
   }
 
   render() {
-    const { lists } = this.props.state;
-
     this.addEvent('click', '.add-card-btn', this.displayAddCardForm.bind(this.props));
     this.addEvent('click', '.add-card>button[type="button"]', this.closeAddCardForm.bind(this.props));
     this.addEvent('submit', '.add-card', this.createNewCard.bind(this.props));
     this.addEvent('click', '.delete-list-btn', this.removeList.bind(this.props));
+
+    const { lists } = this.props.state;
 
     // prettier-ignore
     return `
@@ -90,7 +91,7 @@ class List extends Component {
                 Add a card
               </button>
             </div>
-            <form class="add-form add-card ${isAdding ? '' : 'hidden'}">
+            <form class="add-form add-card ${isAdding ? 'active' : 'hidden'}">
               <input placeholder="Enter a new title."></input>
               <div class="button-holder">
                 <button type="submit">Add card</button>

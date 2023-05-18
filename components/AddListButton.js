@@ -5,11 +5,13 @@ class AddListButton extends Component {
   displayAddListForm(e) {
     if (!e.target.closest('.add-list-btn')) return;
 
-    this.setState({ isAddingList: true });
+    const updatedList = this.state.lists.map(list => ({ ...list, isAdding: false }));
+
+    this.setState({ lists: updatedList, isAddingList: true });
   }
 
   closeAddListForm(e) {
-    if (!e.target.matches('.close-add-list-btn')) return;
+    if (!e.target.matches('.close-add-list-btn') && !e.target.matches('.list-wrapper')) return;
 
     this.setState({ isAddingList: false });
   }
