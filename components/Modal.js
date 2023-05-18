@@ -15,15 +15,36 @@ class Modal extends Component {
   }
 
   disabledTextarea(e) {
-    if (e.target.matches('.description-form>textarea.active')) return;
+    if (e.target.closest('.description-form')) return;
 
     if (e.target.closest('.modal')) this.setState({ modalInfo: { ...this.state.modalInfo, isTyping: false } });
+  }
+
+  submitDescription(e) {
+    if (!e.target.matches('.description-form')) return;
+
+    const newDescription = e.target.firstElementChild.value.trim();
+    if (!newDescription) return;
+
+    const { listId, cardId } = this.state.modalInfo;
+
+    const updatedList = this.state.lists.map(list =>
+      list.id !== +listId
+        ? list
+        : {
+            ...list,
+            cards: list.cards.map(card => (card.cardId !== +cardId ? card : { ...card, description: newDescription })),
+          }
+    );
+
+    this.setState({ lists: updatedList, modalInfo: { ...this.state.modalInfo, isTyping: false } });
   }
 
   render() {
     this.addEvent('click', '.modal', this.closeModal.bind(this.props));
     this.addEvent('click', '.description-form>textarea.not-active', this.ableTextarea.bind(this.props));
     this.addEvent('click', '.description-form>textarea.active', this.disabledTextarea.bind(this.props));
+    this.addEvent('submit', '.description-form', this.submitDescription.bind(this.props));
 
     const { state } = this.props;
     const { open, listId, cardId, isTyping } = state.modalInfo;
@@ -48,7 +69,8 @@ class Modal extends Component {
               <span>Description</span>
             </div>
             <form class="description-form">
-              <textarea class="${isTyping ? 'active' : 'not-active'}">${card.description ? card.description.trim() : 'Enter a more detailed description.'.trim()}</textarea>
+              <textarea placeholder="${card.description ? card.description : "Enter a detailed description!"}" class="${isTyping ? 'active' : 'not-active'}">${card.description}</textarea>
+              <button type="submit" class="${isTyping ? 'visible' : 'hidden'}">Save</button>
             </form>
           </div>
         </div>
