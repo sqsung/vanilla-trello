@@ -15,7 +15,7 @@ class Modal extends Component {
     const { open, listId, cardId } = state.modalInfo;
 
     const list = state.lists.filter(list => list.id === +listId)[0];
-    const card = list.cards.filter(card => card.cardId === +cardId)[0];
+    const card = list?.cards.filter(card => card.cardId === +cardId)[0];
 
     return `
       <div class="modal ${open ? '' : 'hidden'}">
@@ -23,7 +23,7 @@ class Modal extends Component {
           <div class="editor-header">
             <div class="title-holder">
               <i class="bi bi-list-task"></i>
-              <span>${card.cardTitle}</span>
+              <span>${open ?? card.cardTitle}</span>
             </div>
             <i class="bi bi-x"></i>
           </div>
