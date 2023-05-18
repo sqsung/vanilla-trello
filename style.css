@@ -116,8 +116,10 @@ button {
   width: 700px;
   height: 500px;
   border-radius: 5px;
-  display: flex;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .editor-header {
@@ -146,6 +148,42 @@ button {
 .editor-header>.bi-x {
   font-size: 28px;
   height: fit-content;
+}
+
+.description-header>span {
+  font-size: 25px;
+  font-weight: 600;
+}
+
+.description-header>i {
+  font-size: 28px;
+}
+
+.description-form>textarea {
+  margin: 10px 0 0 30px;
+  width: calc(100% - 30px);
+  height: 120px;
+  border-radius: 5px;
+  padding: 10px;
+  resize: none;
+  transition: 0.15s ease-in-out;
+}
+
+.description-form>textarea.not-active {
+  font-style: italic;
+  color: var(--color-black);
+  background-color: var(--color-gray);
+  cursor: pointer;
+}
+
+
+.description-form>textarea.active {
+  height: 180px;
+  background-color: none;
+}
+
+.description-form>textarea.not-active:hover {
+  background-color: var(--color-light-gray);
 }
 
 .list-wrapper {
