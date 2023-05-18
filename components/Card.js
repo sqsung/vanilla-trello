@@ -59,7 +59,7 @@ class Card extends Component {
 
     const [targetListId, targetCardId] = e.target.closest('.card').dataset.id.split('-');
 
-    this.setState({ modalInfo: { open: true, listId: targetListId, cardId: targetCardId } });
+    this.setState({ modalInfo: { open: true, listId: targetListId, cardId: targetCardId, isTyping: false } });
   }
 
   render(card, listId) {
