@@ -1,27 +1,23 @@
 /* eslint-disable import/extensions */
-import diff from './diff.js';
+import applyDiff from './diff.js';
 import eventStorage from './eventStorage.js';
 
 let $root = null;
+let rootComponentInstance = null;
 
 const bindEvents = () => {
   eventStorage.forEach(({ eventType, handler }) => $root.addEventListener(`${eventType}`, handler));
 };
 
-const render = (newDOMStr, $container) => {
-  if (!$root) {
-    $container.innerHTML = newDOMStr;
-    $root = $container;
+const render = (RootComponent, $container) => {
+  if ($container) $root = $container;
+  if (RootComponent) rootComponentInstance = new RootComponent();
 
-    bindEvents();
+  const $virtual = $root.cloneNode();
+  const domString = rootComponentInstance.render();
+  $virtual.innerHTML = domString;
 
-    return;
-  }
-
-  const virtualDOM = $root.cloneNode(true);
-  virtualDOM.innerHTML = newDOMStr;
-
-  diff($root, [...virtualDOM.childNodes], [...$root.childNodes]);
+  applyDiff($root, $virtual);
 
   bindEvents();
 };
