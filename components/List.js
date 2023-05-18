@@ -40,7 +40,7 @@ class List extends Component {
             cards: [
               ...list.cards,
               {
-                cardId: Math.max(...list.cards.map(({ cardId }) => cardId)) + 1 || 0,
+                cardId: list.cards.length ? Math.max(...list.cards.map(({ cardId }) => cardId)) + 1 : 0,
                 cardTitle: newCardTitle,
                 description: '',
               },

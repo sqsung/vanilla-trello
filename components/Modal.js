@@ -59,7 +59,7 @@ class Modal extends Component {
           <div class="editor-header">
             <div class="title-holder">
               <i class="bi bi-list-task"></i>
-              <span>${open ?? card.cardTitle}</span>
+              <span>${card?.cardTitle ? card.cardTitle : ''}</span>
             </div>
             <i class="bi bi-x"></i>
           </div>
@@ -69,7 +69,7 @@ class Modal extends Component {
               <span>Description</span>
             </div>
             <form class="description-form">
-              <textarea placeholder="${card.description ? card.description : "Enter a detailed description!"}" class="${isTyping ? 'active' : 'not-active'}">${card.description}</textarea>
+              <textarea placeholder="${card?.description ? card.description : "Enter a detailed description!"}" class="${isTyping ? 'active' : 'not-active'}">${card?.description ? card.description : ''}</textarea>
               <button type="submit" class="${isTyping ? 'visible' : 'hidden'}">Save</button>
             </form>
           </div>
