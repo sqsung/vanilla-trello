@@ -1,3 +1,5 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable import/extensions */
 import render from '../utils/render.js';
 import eventStorage from '../utils/eventStorage.js';
 
@@ -8,7 +10,8 @@ class Component {
 
   setState(newState) {
     this.state = { ...this.state, ...newState };
-    render(this.render());
+
+    render();
   }
 
   /** @abstract */
