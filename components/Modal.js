@@ -49,8 +49,8 @@ class Modal extends Component {
     const { state } = this.props;
     const { open, listId, cardId, isTyping } = state.modalInfo;
 
-    const list = state.lists.filter(list => list.id === +listId)[0];
-    const card = list?.cards.filter(card => card.cardId === +cardId)[0];
+    const list = state.lists.find(list => list.id === +listId);
+    const card = list?.cards.find(card => card.cardId === +cardId);
 
     // prettier-ignore
     return `
@@ -59,7 +59,7 @@ class Modal extends Component {
           <div class="editor-header">
             <div class="title-holder">
               <i class="bi bi-list-task"></i>
-              <span>${card?.cardTitle ? card.cardTitle : ''}</span>
+              <span>${card?.cardTitle ? card.cardTitle : ''} <span>in ${list.title}</span></span>
             </div>
             <i class="bi bi-x"></i>
           </div>
