@@ -59,7 +59,7 @@ class Modal extends Component {
           <div class="editor-header">
             <div class="title-holder">
               <i class="bi bi-list-task"></i>
-              <span>${card?.cardTitle ? card.cardTitle : ''} <span>in ${list.title}</span></span>
+              <span>${card?.cardTitle ? card.cardTitle : ''} <span>in ${list?.title}</span></span>
             </div>
             <i class="bi bi-x close-modal-btn"></i>
           </div>

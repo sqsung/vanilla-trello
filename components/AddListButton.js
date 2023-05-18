@@ -8,6 +8,8 @@ class AddListButton extends Component {
     const updatedList = this.state.lists.map(list => ({ ...list, isAdding: false }));
 
     this.setState({ lists: updatedList, isAddingList: true });
+
+    e.target.closest('.list-content').lastElementChild.firstElementChild.focus();
   }
 
   closeAddListForm(e) {
@@ -32,6 +34,11 @@ class AddListButton extends Component {
       lists: [...this.state.lists, { id: nextListId, title: newListTitle, cards: [], isAdding: false }],
       isAddingList: true,
     });
+
+    const lastListWrapper = document.querySelector('.list-wrapper[data-id="list-adder"]');
+
+    lastListWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    lastListWrapper.firstElementChild.lastElementChild.firstElementChild.focus();
   }
 
   render() {
@@ -48,7 +55,7 @@ class AddListButton extends Component {
             <span>+ Add another list</span>
           </button>
           <form class="add-form add-list-form ${isAddingList ? '' : 'hidden'}">
-            <input placeholder="Enter a new title."></input>
+            <input placeholder="Enter a new title." autofocus />
             <div class="button-holder">
               <button type="submit">Add list</button>
               <button type="button"><i class="bi bi-x close-add-list-btn"></i></button>

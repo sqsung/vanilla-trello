@@ -12,6 +12,8 @@ class List extends Component {
     );
 
     this.setState({ lists: newLists, isAddingList: false });
+
+    e.target.closest('.add-card-btn-holder').parentElement.lastElementChild.firstElementChild.focus();
   }
 
   closeAddCardForm(e) {
