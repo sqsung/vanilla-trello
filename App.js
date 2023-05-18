@@ -1,6 +1,8 @@
 /* eslint-disable import/extensions */
 import Component from './core/Component.js';
-import { Header, Board, Modal } from './components/index.js';
+import Header from './components/Header.js';
+import Board from './components/Board.js';
+import Modal from './components/Modal.js';
 
 class App extends Component {
   state = {
