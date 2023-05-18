@@ -3,7 +3,7 @@ import Component from '../core/Component.js';
 
 class Card extends Component {
   openTitleEditor(e) {
-    if (!e.target.matches('.bi-pencil')) return;
+    if (!e.target.matches('.card-icon-holder>.bi-pencil')) return;
 
     const [targetListId, targetCardId] = e.target.closest('.card').dataset.id.split('-');
 
