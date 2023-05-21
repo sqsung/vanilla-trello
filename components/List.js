@@ -13,7 +13,7 @@ class List extends Component {
 
     this.setState({ lists: newLists, isAddingList: false });
 
-    e.target.closest('.add-card-btn-holder').parentElement.lastElementChild.firstElementChild.focus();
+    e.target.closest('.add-card-btn-holder').parentElement.querySelector('.add-form').firstElementChild.focus();
   }
 
   closeAddCardForm(e) {
@@ -79,23 +79,23 @@ class List extends Component {
     this.setState({ dragInfo: { dragId: newId, dragOverId: newId } });
   }
 
-  shiftList(e) {
-    if (!e.target.closest('.list-wrapper')) return;
+  swapList(e) {
+    if (!e.target.closest('.list-wrapper') || e.target.closest('.list-wrapper').dataset.id === 'list-adder') return;
+    if (this.state.dragInfo.dragId === +e.target.closest('.list-wrapper').dataset.id) return;
 
-    const newId = e.target.closest('.list-wrapper').dataset.id;
+    const newId = +e.target.closest('.list-wrapper').dataset.id;
 
-    this.setState({ dragInfo: { ...this.state.dragInfo, dragOverId: +newId } });
+    const dragList = this.state.lists.find(({ id }) => id === this.state.dragInfo.dragId);
+    const dragOverList = this.state.lists.find(({ id }) => id === newId);
 
-    // const placeholder = e.target.matches('.list-wrapper')
-    //   ? e.target.firstElementChild.cloneNode()
-    //   : e.target.closest('.list-content').cloneNode();
+    const newList = this.state.lists.map(list => {
+      if (list.id === newId) return { ...dragList, id: this.state.dragInfo.dragId };
+      if (list.id === this.state.dragInfo.dragId) return { ...dragOverList, id: newId };
 
-    // placeholder.classList.add('placeholder-list');
+      return list;
+    });
 
-    // console.log(e.target.closest('.list-wrapper'));
-
-    // e.target.closest('.list-wrapper').insertBefore(placeholder, e.target.closest('.list-content'));
-    // e.target.closest('.list-wrapper').insertBefore(e.target.closest('.listContent'));
+    this.setState({ lists: newList, dragInfo: { dragId: this.state.dragInfo.dragId, dragOverId: newId } });
   }
 
   dropList(e) {
@@ -112,7 +112,7 @@ class List extends Component {
     this.addEvent('dragover', '.list-content', this.cancelDragover.bind(this.props));
     this.addEvent('dragstart', '.list-content', this.dragList.bind(this.props));
     this.addEvent('drop', '.list-content', this.dropList.bind(this.props));
-    this.addEvent('dragenter', '.list-wrapper', this.shiftList.bind(this.props));
+    this.addEvent('dragenter', '.list-wrapper', this.swapList.bind(this.props));
 
     const { lists, dragInfo } = this.props.state;
     const { dragId, dragOverId } = dragInfo;
@@ -123,7 +123,7 @@ class List extends Component {
     return `
       ${lists.map(({ id, title, cards, isAdding }) => `
         <div class="list-wrapper" data-id="${id}">
-          <div class="list-content ${dragId === +id ? 'placeholder' : ''}" draggable="true">
+          <div class="list-content" draggable="true">
             <div class="list-header"> 
               <h2>${title}</h2>
               <i class="bi bi-x delete-list-btn"></i>
@@ -146,6 +146,7 @@ class List extends Component {
                 </button>
               </div>
             </form>
+            <div class="${dragId === +id ? 'drag-placeholder' : 'hidden'}">
           </div>
         </div>`).join('')}
       `
