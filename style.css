@@ -215,6 +215,7 @@ button {
 
 .list-wrapper {
   height: 100%;
+  display: flex;
 }
 
 .list {
@@ -225,6 +226,7 @@ button {
   background-color: var(--color-gray);
   border-radius: 2px;
   width: 300px;
+  height: fit-content;
   padding: 10px;
   box-shadow: 1px 1px 5px 0 rgba(0, 0, 0, 0.613);
   margin: 5px;
@@ -419,4 +421,10 @@ button {
 /* hidden class */
 .hidden {
   display: none;
+}
+
+.placeholder,
+.placeholder * {
+  background-color: black;
+  color: black;
 }
