@@ -9,7 +9,7 @@
   --color-light-black: #688ba5;
   --color-black: #2c3758;
   --color-point-red: #f1404b;
-  --color-drag: #151517aa;
+  --color-drag: #151517da;
 }
 
 /* Nomalize */
@@ -19,6 +19,7 @@
   font-size: 16px;
   font-family: 'Spoqa Han Sans Neo', 'sans-serif';
   font-weight: 400;
+  /* -webkit-user-drag: none; */
 }
 
 ol,
@@ -92,6 +93,7 @@ button {
 }
 
 .board {
+  position: relative;
   display: flex;
   overflow-x: auto;
   height: calc(100vh - 100px);
@@ -316,6 +318,11 @@ button {
 
 .list-content>ul>.card:hover>div>div>i {
   visibility: visible;
+}
+
+.ghost-image {
+  position: absolute;
+  z-index: 999;
 }
 
 .card>form {

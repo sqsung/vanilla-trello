@@ -2,6 +2,8 @@
 import Component from '../core/Component.js';
 import Card from './Card.js';
 
+const ghostPosition = { x: 0, y: 0 };
+
 class List extends Component {
   displayAddCardForm(e) {
     if (!e.target.closest('.add-card-btn-holder')) return;
@@ -72,10 +74,31 @@ class List extends Component {
     e.preventDefault();
   }
 
+  moveGhostImage(e) {
+    e.preventDefault();
+
+    console.log(e.clientX);
+    console.log(e.clientY);
+  }
+
   dragList(e) {
     if (!e.target.matches('.list-content')) return;
 
+    const ghostImage = e.target.cloneNode(true);
+
+    ghostImage.classList.add('ghost-image');
+    // document.body.appendChild(ghostImage);
+
+    // console.log(e.clientX - e.target.offsetLeft);
+    // console.log(e.clientY - e.target.offsetTop);
+
+    // ghostImage.style.left = `${e.clientX - e.target.offsetLeft}px`;
+    // ghostImage.style.top = `${e.clientY - e.target.offsetTop}px`;
+
+    document.addEventListener('mousemove', e => console.log(e.clientX));
+
     const newId = +e.target.closest('.list-wrapper').dataset.id;
+
     this.setState({ dragInfo: { dragId: newId, dragOverId: newId } });
   }
 
@@ -116,8 +139,6 @@ class List extends Component {
 
     const { lists, dragInfo } = this.props.state;
     const { dragId, dragOverId } = dragInfo;
-
-    console.log(`[drag]: ${dragId} => ${dragOverId}`);
 
     // prettier-ignore
     return `
