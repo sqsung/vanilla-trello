@@ -2,17 +2,6 @@
 import Component from '../core/Component.js';
 import Card from './Card.js';
 
-const ghostPosition = { x: 0, y: 0 };
-
-// const swapList = e => {};
-
-// const onMove = e => {
-//   e.preventDefault();
-
-//   console.log(e.target);
-//   console.log(document.elementFromPoint(e.clientX, e.clientY).closest('.list-wrapper').dataset.id);
-// };
-
 class List extends Component {
   displayAddCardForm(e) {
     if (!e.target.closest('.add-card-btn-holder')) return;
@@ -83,7 +72,7 @@ class List extends Component {
     e.preventDefault();
   }
 
-  onDrag(e) {
+  onDragstart(e) {
     if (!e.target.closest('.list-content') || e.target.matches('.placeholder')) return;
 
     const ghost = e.target.closest('.list-content').cloneNode(true);
@@ -100,6 +89,12 @@ class List extends Component {
     const newDragId = +e.target.closest('.list-wrapper').dataset.id;
 
     this.setState({ dragInfo: { dragId: newDragId, dragOverId: newDragId } });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  onDrag(e) {
+    document.querySelector('.ghost').style.left = e.clientX + 'px';
+    document.querySelector('.ghost').style.top = e.clientY + 'px';
   }
 
   onDragEnter(e) {
@@ -121,8 +116,8 @@ class List extends Component {
     this.setState({ lists: newList, dragInfo: { dragId: this.state.dragInfo.dragId, dragOverId: dragoverId } });
   }
 
-  onDrop(e) {
-    if (!e.target.closest('.list-wrapper')) return;
+  onDrop() {
+    document.querySelector('.ghost').remove();
 
     this.setState({ dragInfo: { dragOverId: null, dragId: null } });
   }
@@ -132,7 +127,8 @@ class List extends Component {
     this.addEvent('click', '.add-card>button[type="button"]', this.closeAddCardForm.bind(this.props));
     this.addEvent('submit', '.add-card', this.createNewCard.bind(this.props));
     this.addEvent('click', '.delete-list-btn', this.removeList.bind(this.props));
-    this.addEvent('dragstart', '.list-content', this.onDrag.bind(this.props));
+    this.addEvent('dragstart', '.list-content', this.onDragstart.bind(this.props));
+    this.addEvent('drag', '.list-content', this.onDrag.bind(this.props));
     this.addEvent('dragenter', '.list-wrapper', this.onDragEnter.bind(this.props));
     this.addEvent('drop', '.list-content', this.onDrop.bind(this.props));
     this.addEvent('dragover', '.list-wrapper', this.cancelDragover.bind(this.props));
