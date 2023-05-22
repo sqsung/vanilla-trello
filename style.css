@@ -219,6 +219,7 @@ button {
 .list-wrapper {
   height: 100%;
   display: flex;
+  position: relative;
 }
 
 .list {
@@ -236,14 +237,17 @@ button {
   margin: 5px;
 }
 
-.drag-placeholder {
+.placeholder,
+.placeholder * {
+  opacity: 0.1;
+  color: transparent;
+}
+
+.ghost {
   position: absolute;
-  top: 0;
   left: 0;
-  z-index: 100;
-  height: 100%;
-  width: 100%;
-  background-color: var(--color-drag);
+  top: 0;
+  transform: rotate(3deg);
 }
 
 .list-header {
@@ -318,11 +322,6 @@ button {
 
 .list-content>ul>.card:hover>div>div>i {
   visibility: visible;
-}
-
-.ghost-image {
-  position: absolute;
-  z-index: 999;
 }
 
 .card>form {
