@@ -72,7 +72,7 @@ class List extends Component {
     e.preventDefault();
   }
 
-  onDragstart(e) {
+  onDragStart(e) {
     if (!e.target.closest('.list-content') || e.target.matches('.placeholder')) return;
 
     const ghost = e.target.closest('.list-content').cloneNode(true);
@@ -117,7 +117,13 @@ class List extends Component {
   }
 
   onDrop() {
-    document.querySelector('.ghost').remove();
+    [...document.querySelectorAll('.ghost')].forEach(ghost => ghost.remove());
+
+    this.setState({ dragInfo: { dragOverId: null, dragId: null } });
+  }
+
+  onDragEnd() {
+    [...document.querySelectorAll('.ghost')].forEach(ghost => ghost.remove());
 
     this.setState({ dragInfo: { dragOverId: null, dragId: null } });
   }
@@ -127,11 +133,12 @@ class List extends Component {
     this.addEvent('click', '.add-card>button[type="button"]', this.closeAddCardForm.bind(this.props));
     this.addEvent('submit', '.add-card', this.createNewCard.bind(this.props));
     this.addEvent('click', '.delete-list-btn', this.removeList.bind(this.props));
-    this.addEvent('dragstart', '.list-content', this.onDragstart.bind(this.props));
+    this.addEvent('dragover', '.list-wrapper', this.cancelDragover.bind(this.props));
+    this.addEvent('dragstart', '.list-content', this.onDragStart.bind(this.props));
     this.addEvent('drag', '.list-content', this.onDrag.bind(this.props));
     this.addEvent('dragenter', '.list-wrapper', this.onDragEnter.bind(this.props));
     this.addEvent('drop', '.list-content', this.onDrop.bind(this.props));
-    this.addEvent('dragover', '.list-wrapper', this.cancelDragover.bind(this.props));
+    this.addEvent('dragend', '.list-content', this.onDragEnd.bind(this.props));
 
     const { lists, dragInfo } = this.props.state;
     const { dragId } = dragInfo;
