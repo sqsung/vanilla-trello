@@ -109,6 +109,8 @@ class List extends Component {
 
   // eslint-disable-next-line class-methods-use-this
   onDrag(e) {
+    e.preventDefault();
+
     document.querySelector('.ghost').style.left = e.clientX + 'px';
     document.querySelector('.ghost').style.top = e.clientY + 'px';
   }
