@@ -134,32 +134,65 @@ class List extends Component {
         lists: newList,
         dragListInfo: { dragId: this.state.dragListInfo.dragId, dragOverId: dragoverId },
       });
-    } else if (e.target.closest('.card')) {
+    } else if (this.state.dragCardInfo.dragCardId !== null && e.target.closest('.card')) {
       const { dragCardId, dragListId } = this.state.dragCardInfo;
       const dragList = this.state.lists.find(({ id }) => id === dragListId);
       const dragCard = dragList.cards.find(({ cardId }) => cardId === dragCardId);
 
-      const dragOverCardEl = e.target.closest('.card'); // 현재 drag밑에 위치한 카드
-      const [dragOverListId, dragOverCardId] = dragOverCardEl.dataset.id.split('-').map(val => +val); // 현재 drag 밑에 위치한 list id, card id
+      // prettier-ignore
+      const [dragOverListId, dragOverCardId] = e.target.closest('.card') ? e.target.closest('.card').dataset.id.split('-').map(val => +val) : [+e.target.closest('.list-wrapper').dataset.id, 0] // 현재 drag 밑에 위치한 list id, card id
       const dragOverList = this.state.lists.find(({ id }) => id === dragOverListId);
       const dragOverCard = dragOverList.cards.find(({ cardId }) => cardId === dragOverCardId);
 
       if (dragOverListId === dragListId) {
-        const newCards = dragOverList.cards.map(card => {
-          if (card.cardId === dragOverCardId) return { ...dragCard, cardId: dragCardId };
-          if (card.cardId === dragCardId) return { ...dragOverCard };
+        const newCards = !dragOverList.cards
+          ? [dragCard]
+          : dragOverList.cards.map(card => {
+              if (card.cardId === dragOverCardId) return { ...dragCard, cardId: dragCardId };
+              if (card.cardId === dragCardId) return { ...dragOverCard };
 
-          return card;
-        });
+              return card;
+            });
 
         this.setState({
           lists: this.state.lists.map(list => (list.id === dragOverListId ? { ...list, cards: newCards } : list)),
-          dragCardInfo: { ...this.state.dragCardInfo, dragOverCardId },
+          dragCardInfo: { dragListId, dragCardId, dragOverListId, dragOverCardId },
         });
       } else {
-        // const newDragCards = dragList.cards.filter(({ cardId }) => cardId === dragCardId);
-        // dragOverList.cards.push({});
+        const newDragCards = dragList.cards.filter(({ cardId }) => cardId !== dragCardId);
+        const newDragCardId = Math.max(...dragOverList.cards.map(({ cardId }) => cardId), 0) + 1;
+
+        const newDragOverCards = dragOverList.cards.slice();
+        newDragOverCards.splice(dragOverCardId, 0, { ...dragCard, cardId: newDragCardId });
+
+        this.setState({
+          lists: this.state.lists.map(list => {
+            if (list.id === dragOverListId) return { ...list, cards: newDragOverCards };
+            if (list.id === dragListId) return { ...list, cards: newDragCards };
+
+            return list;
+          }),
+          dragCardInfo: { ...this.state.dragCardInfo, dragListId: dragOverListId, dragCardId: newDragCardId },
+        });
       }
+    } else if (
+      this.state.dragCardInfo.dragCardId !== null &&
+      !e.target.closest('.list-wrapper').querySelector('.list').firstElementChild
+    ) {
+      const emptyListId = +e.target.closest('.list-wrapper').dataset.id;
+
+      const { dragCardId, dragListId } = this.state.dragCardInfo;
+      const dragList = this.state.lists.find(({ id }) => id === dragListId);
+      const dragCard = dragList.cards.find(({ cardId }) => cardId === dragCardId);
+
+      const newList = this.state.lists.map(list => {
+        if (list.id === emptyListId) return { ...list, cards: [dragCard] };
+        if (list.id === dragListId) return { ...list, cards: list.cards.filter(({ cardId }) => cardId !== dragCardId) };
+
+        return list;
+      });
+
+      this.setState({ lists: newList, dragCardInfo: { ...this.state.dragCardInfo, dragListId: emptyListId } });
     }
   }
 
@@ -168,7 +201,7 @@ class List extends Component {
 
     this.setState({
       dragListInfo: { dragOverId: null, dragId: null },
-      dragCardInfo: { dragListId: null, dragCardId: null, dragoverCardId: null, dragOverListId: null },
+      dragCardInfo: { dragListId: null, dragCardId: null },
     });
   }
 
@@ -177,7 +210,7 @@ class List extends Component {
 
     this.setState({
       dragListInfo: { dragOverId: null, dragId: null },
-      dragCardInfo: { dragListId: null, dragCardId: null, dragoverCardId: null, dragOverListId: null },
+      dragCardInfo: { dragListId: null, dragCardId: null },
     });
   }
 
