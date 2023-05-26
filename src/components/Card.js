@@ -69,9 +69,12 @@ class Card extends Component {
     this.addEvent('click', '.card', this.openModal.bind(this.props));
 
     const { cardId, cardTitle, description, isEditing } = card;
+    const { dragListId, dragCardId } = this.props.state.dragCardInfo;
 
     return `
-      <li data-id="${`${listId}-${cardId}`}" class="card" draggable="true">
+      <li data-id="${`${listId}-${cardId}`}" class="card ${
+      dragListId === +listId && dragCardId === +cardId ? 'placeholder' : ''
+    }" draggable="true">
         <div>
           <span class="card-title ${isEditing ? 'hidden' : ''}">${cardTitle}</span>
           <div class="card-icon-holder ${isEditing ? 'hidden' : ''}">

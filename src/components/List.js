@@ -75,20 +75,36 @@ class List extends Component {
   onDragStart(e) {
     if (!e.target.closest('.list-content') || e.target.matches('.placeholder')) return;
 
-    const ghost = e.target.closest('.list-content').cloneNode(true);
-    ghost.classList.add('ghost');
+    const ghost = e.target.closest('.card')
+      ? e.target.closest('.card').cloneNode(true)
+      : e.target.closest('.list-content').cloneNode(true);
 
+    ghost.classList.add('ghost');
     ghost.style.left = e.clientX + 'px';
     ghost.style.top = e.clientY + 'px';
+
+    if (e.target.closest('.card')) {
+      ghost.style.width = e.target.closest('.card').offsetWidth + 'px';
+      ghost.style.height = e.target.closest('.card').offsetHeight + 'px';
+    }
 
     document.body.appendChild(ghost);
 
     const emptyImage = new Image();
     e.dataTransfer.setDragImage(emptyImage, 0, 0);
 
-    const newDragId = +e.target.closest('.list-wrapper').dataset.id;
+    if (e.target.closest('.card')) {
+      // prettier-ignore
+      const [dragListId, dragCardId] = e.target.closest('.card').dataset.id.split('-').map(val => +val);
 
-    this.setState({ dragInfo: { dragId: newDragId, dragOverId: newDragId } });
+      this.setState({
+        dragCardInfo: { dragListId, dragCardId, dragOverCardId: dragCardId, dragOverListId: dragListId },
+      });
+    } else {
+      const newDragId = +e.target.closest('.list-wrapper').dataset.id;
+
+      this.setState({ dragListInfo: { dragId: newDragId, dragOverId: newDragId } });
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -102,30 +118,67 @@ class List extends Component {
 
     if (!e.target.closest('.list-wrapper') || e.target.closest('.list-wrapper')?.dataset.id === 'list-adder') return;
 
-    const dragoverId = +e.target.closest('.list-wrapper').dataset.id;
-    const dragList = this.state.lists.find(({ id }) => id === this.state.dragInfo.dragId);
-    const dragOverList = this.state.lists.find(({ id }) => id === dragoverId);
+    if (this.state.dragCardInfo.dragCardId === null) {
+      const dragoverId = +e.target.closest('.list-wrapper').dataset.id;
+      const dragoverList = this.state.lists.find(({ id }) => id === dragoverId);
+      const dragList = this.state.lists.find(({ id }) => id === this.state.dragListInfo.dragId);
 
-    const newList = this.state.lists.map(list => {
-      if (list.id === dragoverId) return { ...dragList, id: this.state.dragInfo.dragId };
-      if (list.id === this.state.dragInfo.dragId) return { ...dragOverList, id: dragoverId };
+      const newList = this.state.lists.map(list => {
+        if (list.id === dragoverId) return { ...dragList, id: this.state.dragListInfo.dragId };
+        if (list.id === this.state.dragListInfo.dragId) return { ...dragoverList, id: dragoverId };
 
-      return list;
-    });
+        return list;
+      });
 
-    this.setState({ lists: newList, dragInfo: { dragId: this.state.dragInfo.dragId, dragOverId: dragoverId } });
+      this.setState({
+        lists: newList,
+        dragListInfo: { dragId: this.state.dragListInfo.dragId, dragOverId: dragoverId },
+      });
+    } else if (e.target.closest('.card')) {
+      const { dragCardId, dragListId } = this.state.dragCardInfo;
+      const dragList = this.state.lists.find(({ id }) => id === dragListId);
+      const dragCard = dragList.cards.find(({ cardId }) => cardId === dragCardId);
+
+      const dragOverCardEl = e.target.closest('.card'); // 현재 drag밑에 위치한 카드
+      const [dragOverListId, dragOverCardId] = dragOverCardEl.dataset.id.split('-').map(val => +val); // 현재 drag 밑에 위치한 list id, card id
+      const dragOverList = this.state.lists.find(({ id }) => id === dragOverListId);
+      const dragOverCard = dragOverList.cards.find(({ cardId }) => cardId === dragOverCardId);
+
+      if (dragOverListId === dragListId) {
+        const newCards = dragOverList.cards.map(card => {
+          if (card.cardId === dragOverCardId) return { ...dragCard, cardId: dragCardId };
+          if (card.cardId === dragCardId) return { ...dragOverCard };
+
+          return card;
+        });
+
+        this.setState({
+          lists: this.state.lists.map(list => (list.id === dragOverListId ? { ...list, cards: newCards } : list)),
+          dragCardInfo: { ...this.state.dragCardInfo, dragOverCardId },
+        });
+      } else {
+        // const newDragCards = dragList.cards.filter(({ cardId }) => cardId === dragCardId);
+        // dragOverList.cards.push({});
+      }
+    }
   }
 
   onDrop() {
     [...document.querySelectorAll('.ghost')].forEach(ghost => ghost.remove());
 
-    this.setState({ dragInfo: { dragOverId: null, dragId: null } });
+    this.setState({
+      dragListInfo: { dragOverId: null, dragId: null },
+      dragCardInfo: { dragListId: null, dragCardId: null, dragoverCardId: null, dragOverListId: null },
+    });
   }
 
   onDragEnd() {
     [...document.querySelectorAll('.ghost')].forEach(ghost => ghost.remove());
 
-    this.setState({ dragInfo: { dragOverId: null, dragId: null } });
+    this.setState({
+      dragListInfo: { dragOverId: null, dragId: null },
+      dragCardInfo: { dragListId: null, dragCardId: null, dragoverCardId: null, dragOverListId: null },
+    });
   }
 
   render() {
@@ -140,8 +193,8 @@ class List extends Component {
     this.addEvent('drop', '.list-content', this.onDrop.bind(this.props));
     this.addEvent('dragend', '.list-content', this.onDragEnd.bind(this.props));
 
-    const { lists, dragInfo } = this.props.state;
-    const { dragId } = dragInfo;
+    const { lists, dragListInfo } = this.props.state;
+    const { dragId } = dragListInfo;
 
     // prettier-ignore
     return `

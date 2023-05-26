@@ -38,7 +38,8 @@ class App extends Component {
     ],
     isAddingList: false,
     modalInfo: { open: false, listId: null, cardId: null, isTyping: false },
-    dragInfo: { dragId: null, dragOverId: null },
+    dragListInfo: { dragId: null, dragOverId: null },
+    dragCardInfo: { dragListId: null, dragCardId: null, dragOverListId: null, dragOverCardId: null },
   };
 
   // prettier-ignore
