@@ -3,6 +3,16 @@ import Component from '../core/Component.js';
 import Card from './Card.js';
 
 class List extends Component {
+  constructor(props) {
+    super();
+
+    this.props = props;
+    this.$dragTarget = null;
+    this.$ghostImage = null;
+    this.fromListId = null;
+    this.dragId = null;
+  }
+
   displayAddCardForm(e) {
     if (!e.target.closest('.add-card-btn-holder')) return;
 
@@ -67,175 +77,177 @@ class List extends Component {
     this.setState({ lists: updatedLists });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  cancelDragover(e) {
-    e.preventDefault();
-  }
-
+  /**
+   * ※ only elements with @draggable attribute can be grabbed, meaning e.target will always be either card or list-content
+   * 1. makes a new ghost image of e.target, adjust location, and append it onto document.body
+   * 2. remove default ghost image with @dataTransfer
+   * 3. make $dragTarget a 'placeholder' and update drag event related information
+   */
   onDragStart(e) {
-    if (!e.target.closest('.list-content') || e.target.matches('.placeholder')) return;
+    // Step 1:
+    const $ghost = e.target.cloneNode(true);
+    $ghost.classList.add('ghost');
 
-    const ghost = e.target.closest('.card')
-      ? e.target.closest('.card').cloneNode(true)
-      : e.target.closest('.list-content').cloneNode(true);
-
-    ghost.classList.add('ghost');
-    ghost.style.left = e.clientX + 'px';
-    ghost.style.top = e.clientY + 'px';
-
-    if (e.target.closest('.card')) {
-      ghost.style.width = e.target.closest('.card').offsetWidth + 'px';
-      ghost.style.height = e.target.closest('.card').offsetHeight + 'px';
+    if (e.target.matches('.card')) {
+      $ghost.style.width = e.target.offsetWidth + 'px';
+      $ghost.style.height = e.target.offsetHeight + 'px';
     }
 
-    document.body.appendChild(ghost);
+    $ghost.style.left = e.clientX + 'px';
+    $ghost.style.top = e.clientY + 'px';
 
+    document.body.appendChild($ghost);
+
+    // Step 2:
     const emptyImage = new Image();
     e.dataTransfer.setDragImage(emptyImage, 0, 0);
 
-    if (e.target.closest('.card')) {
-      // prettier-ignore
-      const [dragListId, dragCardId] = e.target.closest('.card').dataset.id.split('-').map(val => +val);
+    // Step 3:
+    e.target.classList.add('placeholder');
+    this.$ghostImage = $ghost;
+    this.$dragTarget = e.target;
+    this.fromListId = +e.target.closest('.list-wrapper').dataset.id;
 
-      this.setState({
-        dragCardInfo: { dragListId, dragCardId, dragOverCardId: dragCardId, dragOverListId: dragListId },
-      });
-    } else {
-      const newDragId = +e.target.closest('.list-wrapper').dataset.id;
-
-      this.setState({ dragListInfo: { dragId: newDragId, dragOverId: newDragId } });
-    }
+    if (e.target.matches('.card')) this.fromCardId = +e.target.dataset.id;
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  /**
+   * to catch mouse movements in between the start and end of a drag event
+   * updates $ghost element's left/top positions using event's @clientX and @clientY
+   */
   onDrag(e) {
-    e.preventDefault();
-
-    document.querySelector('.ghost').style.left = e.clientX + 'px';
-    document.querySelector('.ghost').style.top = e.clientY + 'px';
+    this.$ghostImage.style.left = e.clientX + 'px';
+    this.$ghostImage.style.top = e.clientY + 'px';
   }
 
-  onDragEnter(e) {
+  /**
+   * must use @preventDefault to allow drop events to be made on normally non-droppable areas
+   * the state should not be changed on dragover as doing so would result in high browser stress levels and malfunctions of setState
+   */
+  onDragOver(e) {
+    const $dropTarget = e.target;
+    const $dropZone = e.target.closest('.list-content');
+
     e.preventDefault();
 
-    if (!e.target.closest('.list-wrapper') || e.target.closest('.list-wrapper')?.dataset.id === 'list-adder') return;
+    if (!$dropZone) return;
 
-    if (this.state.dragCardInfo.dragCardId === null) {
-      const dragoverId = +e.target.closest('.list-wrapper').dataset.id;
-      const dragoverList = this.state.lists.find(({ id }) => id === dragoverId);
-      const dragList = this.state.lists.find(({ id }) => id === this.state.dragListInfo.dragId);
+    /**
+     * condition 1: when a list element is being dragged
+     * 1. if e is valid, manipulate DOM to reorder lists as they should appear according to user's drag movement
+     * 2. go through the lists and change their data-ids to fit their new order
+     */
+    if (this.$dragTarget.matches('.list-content')) {
+      if ($dropZone === this.$dragTarget) return;
 
-      const newList = this.state.lists.map(list => {
-        if (list.id === dragoverId) return { ...dragList, id: this.state.dragListInfo.dragId };
-        if (list.id === this.state.dragListInfo.dragId) return { ...dragoverList, id: dragoverId };
+      const [fromId, toId] = [
+        +this.$dragTarget.closest('.list-wrapper').dataset.id,
+        +$dropTarget.closest('.list-wrapper').dataset.id,
+      ];
 
-        return list;
+      // Step 1:
+      this.$dragTarget
+        .closest('.list-wrapper')
+        .parentNode.insertBefore(
+          this.$dragTarget.closest('.list-wrapper'),
+          fromId > toId ? $dropZone.closest('.list-wrapper') : $dropZone.closest('.list-wrapper').nextElementSibling
+        );
+
+      // Step 2:
+      [...document.querySelectorAll('.list-wrapper')].forEach(($list, idx) => {
+        $list.dataset.id = idx;
       });
 
-      this.setState({
-        lists: newList,
-        dragListInfo: { dragId: this.state.dragListInfo.dragId, dragOverId: dragoverId },
-      });
-    } else if (this.state.dragCardInfo.dragCardId !== null && e.target.closest('.card')) {
-      const { dragCardId, dragListId } = this.state.dragCardInfo;
-      const dragList = this.state.lists.find(({ id }) => id === dragListId);
-      const dragCard = dragList.cards.find(({ cardId }) => cardId === dragCardId);
+      return;
+    }
 
-      // prettier-ignore
-      const [dragOverListId, dragOverCardId] = e.target.closest('.card') ? e.target.closest('.card').dataset.id.split('-').map(val => +val) : [+e.target.closest('.list-wrapper').dataset.id, 0] // 현재 drag 밑에 위치한 list id, card id
-      const dragOverList = this.state.lists.find(({ id }) => id === dragOverListId);
-      const dragOverCard = dragOverList.cards.find(({ cardId }) => cardId === dragOverCardId);
+    /**
+     * condition 2: when a card element is being dragged
+     * 1. when card container being dragged over has no children (= is an empty ul list)
+     * 2. early return when $dragTarget over itself OR $dropTarget is NOT a card element
+     * 3. else calculate vertical center of $dropTarget and insertBefore accordingly
+     */
+    if (this.$dragTarget.matches('.card')) {
+      const $toCardContainer = $dropZone.querySelector('.list');
 
-      if (dragOverListId === dragListId) {
-        const newCards = !dragOverList.cards
-          ? [dragCard]
-          : dragOverList.cards.map(card => {
-              if (card.cardId === dragOverCardId) return { ...dragCard, cardId: dragCardId };
-              if (card.cardId === dragCardId) return { ...dragOverCard };
-
-              return card;
-            });
-
-        this.setState({
-          lists: this.state.lists.map(list => (list.id === dragOverListId ? { ...list, cards: newCards } : list)),
-          dragCardInfo: { dragListId, dragCardId, dragOverListId, dragOverCardId },
-        });
-      } else {
-        const newDragCards = dragList.cards.filter(({ cardId }) => cardId !== dragCardId);
-        const newDragCardId = Math.max(...dragOverList.cards.map(({ cardId }) => cardId), 0) + 1;
-
-        const newDragOverCards = dragOverList.cards.slice();
-        newDragOverCards.splice(dragOverCardId, 0, { ...dragCard, cardId: newDragCardId });
-
-        this.setState({
-          lists: this.state.lists.map(list => {
-            if (list.id === dragOverListId) return { ...list, cards: newDragOverCards };
-            if (list.id === dragListId) return { ...list, cards: newDragCards };
-
-            return list;
-          }),
-          dragCardInfo: { ...this.state.dragCardInfo, dragListId: dragOverListId, dragCardId: newDragCardId },
-        });
+      // Step 1:
+      if (!$toCardContainer.children || $dropTarget === $dropZone) {
+        $toCardContainer.appendChild(this.$dragTarget);
+        return;
       }
-    } else if (
-      this.state.dragCardInfo.dragCardId !== null &&
-      !e.target.closest('.list-wrapper').querySelector('.list').firstElementChild
-    ) {
-      const emptyListId = +e.target.closest('.list-wrapper').dataset.id;
 
-      const { dragCardId, dragListId } = this.state.dragCardInfo;
-      const dragList = this.state.lists.find(({ id }) => id === dragListId);
-      const dragCard = dragList.cards.find(({ cardId }) => cardId === dragCardId);
+      // Step 2:
+      if ($dropTarget === this.$dragTarget || !$dropTarget.matches('.card')) return;
 
-      const newList = this.state.lists.map(list => {
-        if (list.id === emptyListId) return { ...list, cards: [dragCard] };
-        if (list.id === dragListId) return { ...list, cards: list.cards.filter(({ cardId }) => cardId !== dragCardId) };
+      // Step 3:
+      const { bottom, top } = $dropTarget.getBoundingClientRect();
+      const center = (bottom - top) / 2;
 
-        return list;
-      });
-
-      this.setState({ lists: newList, dragCardInfo: { ...this.state.dragCardInfo, dragListId: emptyListId } });
+      $toCardContainer.insertBefore(this.$dragTarget, e.offsetY < center ? $dropTarget : $dropTarget.nextSibling);
     }
   }
 
+  /**
+   * when draggged element is dropped, update state
+   * re-initialize class properties related to drag event
+   * use setTimeout to push setState logic into task queue as it may interefere with the main logic
+   */
   onDrop() {
-    [...document.querySelectorAll('.ghost')].forEach(ghost => ghost.remove());
+    this.$ghostImage.remove();
+    this.$dragTarget.classList.remove('placeholder');
 
-    this.setState({
-      dragListInfo: { dragOverId: null, dragId: null },
-      dragCardInfo: { dragListId: null, dragCardId: null },
-    });
+    if (this.$dragTarget.matches('.list-content')) {
+      const [fromId, toId] = [this.fromListId, +this.$dragTarget.closest('.list-wrapper').dataset.id];
+      const { lists } = this.state;
+
+      if (fromId === toId) return;
+
+      console.log('From -> ', fromId, 'To -> ', toId);
+
+      const temp = lists[fromId];
+      const _lists = lists.filter(({ id }) => id !== fromId);
+      _lists.splice(toId, 0, temp);
+
+      const newLists = _lists.map((list, idx) => ({ ...list, id: idx }));
+
+      setTimeout(() => this.setState({ lists: newLists }), 10);
+    }
+
+    // if (this.$dragTarget.matches('.card')) {}
+
+    this.$dragTarget = null;
+    this.$ghostImage = null;
+    this.fromListId = null;
+    this.dragId = null;
   }
 
-  onDragEnd() {
-    [...document.querySelectorAll('.ghost')].forEach(ghost => ghost.remove());
+  // onDragEnd() {
+  //   this.$ghostImage.remove();
+  //   this.$dragTarget.classList.remove('placeholder');
 
-    this.setState({
-      dragListInfo: { dragOverId: null, dragId: null },
-      dragCardInfo: { dragListId: null, dragCardId: null },
-    });
-  }
+  //   this.$dragTarget = null;
+  //   this.$ghostImage = null;
+  //   this.dragId = null;
+  // }
 
   render() {
     this.addEvent('click', '.add-card-btn', this.displayAddCardForm.bind(this.props));
     this.addEvent('click', '.add-card>button[type="button"]', this.closeAddCardForm.bind(this.props));
     this.addEvent('submit', '.add-card', this.createNewCard.bind(this.props));
     this.addEvent('click', '.delete-list-btn', this.removeList.bind(this.props));
-    this.addEvent('dragover', '.list-wrapper', this.cancelDragover.bind(this.props));
-    this.addEvent('dragstart', '.list-content', this.onDragStart.bind(this.props));
-    this.addEvent('drag', '.list-content', this.onDrag.bind(this.props));
-    this.addEvent('dragenter', '.list-wrapper', this.onDragEnter.bind(this.props));
-    this.addEvent('drop', '.list-content', this.onDrop.bind(this.props));
-    this.addEvent('dragend', '.list-content', this.onDragEnd.bind(this.props));
+    this.addEvent('dragstart', '.list-wrapper', this.onDragStart.bind(this.props));
+    this.addEvent('drag', '.list-wrapper', this.onDrag.bind(this.props));
+    this.addEvent('dragover', '.list-wrapper', this.onDragOver.bind(this.props));
+    this.addEvent('drop', '.list-wrapper', this.onDrop.bind(this.props));
+    // this.addEvent('dragend', '.list-wrapper', this.onDragEnd.bind(this.props));
 
-    const { lists, dragListInfo } = this.props.state;
-    const { dragId } = dragListInfo;
+    const { lists } = this.props.state;
 
     // prettier-ignore
     return `
       ${lists.map(({ id, title, cards, isAdding }) => `
         <div class="list-wrapper" data-id="${id}">
-          <div class="list-content ${dragId === +id ? 'placeholder' : ''}" draggable="true">
+          <div class="list-content" draggable="true">
             <div class="list-header"> 
               <h2>${title}</h2>
               <i class="bi bi-x delete-list-btn"></i>
