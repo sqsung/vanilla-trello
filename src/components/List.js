@@ -10,7 +10,7 @@ class List extends Component {
     this.$dragTarget = null;
     this.$ghostImage = null;
     this.fromListId = null;
-    this.dragId = null;
+    this.cardDropIndex = null;
   }
 
   displayAddCardForm(e) {
@@ -107,8 +107,6 @@ class List extends Component {
     this.$ghostImage = $ghost;
     this.$dragTarget = e.target;
     this.fromListId = +e.target.closest('.list-wrapper').dataset.id;
-
-    if (e.target.matches('.card')) this.fromCardId = +e.target.dataset.id;
   }
 
   /**
@@ -184,6 +182,7 @@ class List extends Component {
       const center = (bottom - top) / 2;
 
       $toCardContainer.insertBefore(this.$dragTarget, e.offsetY < center ? $dropTarget : $dropTarget.nextSibling);
+      this.cardDropIndex = [...$dropZone.querySelector('.list').children].indexOf(this.$dragTarget);
     }
   }
 
@@ -196,13 +195,12 @@ class List extends Component {
     this.$ghostImage.remove();
     this.$dragTarget.classList.remove('placeholder');
 
+    // condition 1. when dragTarget is a list element
     if (this.$dragTarget.matches('.list-content')) {
       const [fromId, toId] = [this.fromListId, +this.$dragTarget.closest('.list-wrapper').dataset.id];
       const { lists } = this.state;
 
       if (fromId === toId) return;
-
-      console.log('From -> ', fromId, 'To -> ', toId);
 
       const temp = lists[fromId];
       const _lists = lists.filter(({ id }) => id !== fromId);
@@ -213,12 +211,36 @@ class List extends Component {
       setTimeout(() => this.setState({ lists: newLists }), 10);
     }
 
-    // if (this.$dragTarget.matches('.card')) {}
+    // condition 2. when dragTarget is a card element
+    if (this.$dragTarget.matches('.card')) {
+      const [fromListId, fromCardId] = this.$dragTarget.dataset.id.split('-').map(val => +val);
+      const toListId = +this.$dragTarget.closest('.list-wrapper').dataset.id;
+      const { lists } = this.state;
+
+      const fromList = lists.find(({ id }) => +id === fromListId);
+      const targetCard = fromList.cards.find(({ cardId }) => +cardId === fromCardId);
+      const filteredFromListCards = fromList.cards.filter(({ cardId }) => +cardId !== fromCardId);
+
+      const addedToListCards = lists.find(({ id }) => +id === toListId).cards;
+      addedToListCards.splice(this.cardDropIndex, 0, targetCard);
+
+      const _addedToListCards = addedToListCards.map((card, idx) => ({ ...card, cardId: idx }));
+      const _filteredFromListCards = filteredFromListCards.map((card, idx) => ({ ...card, cardId: idx }));
+
+      const newLists = lists.map(list => {
+        if (+list.id === fromListId) return { ...list, cards: _filteredFromListCards };
+        if (+list.id === toListId) return { ...list, cards: _addedToListCards };
+
+        return list;
+      });
+
+      setTimeout(() => this.setState({ lists: newLists }), 10);
+    }
 
     this.$dragTarget = null;
     this.$ghostImage = null;
     this.fromListId = null;
-    this.dragId = null;
+    this.cardDropIndex = null;
   }
 
   // onDragEnd() {
@@ -227,7 +249,8 @@ class List extends Component {
 
   //   this.$dragTarget = null;
   //   this.$ghostImage = null;
-  //   this.dragId = null;
+  //   this.fromListId = null;
+  //   this.cardDropIndex = null;
   // }
 
   render() {
