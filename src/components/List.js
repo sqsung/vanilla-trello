@@ -202,7 +202,8 @@ class List extends Component {
 
     // condition 1. when dragTarget is a list element
     if (this.$dragTarget.matches('.list-content')) {
-      const [fromId, toId] = [this.fromListId, +this.$dragTarget.closest('.list-wrapper').dataset.id];
+      const fromId = this.fromListId;
+      const toId = +this.$dropZone.closest('.list-wrapper').dataset.id;
       const { lists } = this.state;
 
       const temp = lists[fromId];
