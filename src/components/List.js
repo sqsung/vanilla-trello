@@ -11,6 +11,7 @@ class List extends Component {
     this.$ghostImage = null;
     this.fromListId = null;
     this.cardDropIndex = null;
+    this.$dropZone = null;
   }
 
   displayAddCardForm(e) {
@@ -128,6 +129,8 @@ class List extends Component {
 
     e.preventDefault();
 
+    this.$dropZone = !$dropZone?.closest('.list-content') ? null : e.target;
+
     if (!$dropZone) return;
 
     /**
@@ -189,18 +192,18 @@ class List extends Component {
   /**
    * when draggged element is dropped, update state
    * re-initialize class properties related to drag event
-   * use setTimeout to push setState logic into task queue as it may interefere with the main logic
+   * update state
    */
   onDrop() {
     this.$ghostImage.remove();
     this.$dragTarget.classList.remove('placeholder');
 
+    if (!this.$dropZone) return;
+
     // condition 1. when dragTarget is a list element
     if (this.$dragTarget.matches('.list-content')) {
       const [fromId, toId] = [this.fromListId, +this.$dragTarget.closest('.list-wrapper').dataset.id];
       const { lists } = this.state;
-
-      if (fromId === toId) return;
 
       const temp = lists[fromId];
       const _lists = lists.filter(({ id }) => id !== fromId);
@@ -208,13 +211,13 @@ class List extends Component {
 
       const newLists = _lists.map((list, idx) => ({ ...list, id: idx }));
 
-      setTimeout(() => this.setState({ lists: newLists }), 10);
+      this.setState({ lists: newLists });
     }
 
     // condition 2. when dragTarget is a card element
     if (this.$dragTarget.matches('.card')) {
       const [fromListId, fromCardId] = this.$dragTarget.dataset.id.split('-').map(val => +val);
-      const toListId = +this.$dragTarget.closest('.list-wrapper').dataset.id;
+      const toListId = +this.$dropZone.closest('.list-wrapper').dataset.id;
       const { lists } = this.state;
 
       const fromList = lists.find(({ id }) => +id === fromListId);
@@ -222,7 +225,7 @@ class List extends Component {
       const filteredFromListCards = fromList.cards.filter(({ cardId }) => +cardId !== fromCardId);
 
       const addedToListCards = lists.find(({ id }) => +id === toListId).cards;
-      addedToListCards.splice(this.cardDropIndex, 0, targetCard);
+      addedToListCards.splice(this.cardDropIndex || 0, 0, targetCard);
 
       const _addedToListCards = addedToListCards.map((card, idx) => ({ ...card, cardId: idx }));
       const _filteredFromListCards = filteredFromListCards.map((card, idx) => ({ ...card, cardId: idx }));
@@ -234,24 +237,26 @@ class List extends Component {
         return list;
       });
 
-      setTimeout(() => this.setState({ lists: newLists }), 10);
+      this.setState({ lists: newLists });
     }
 
     this.$dragTarget = null;
     this.$ghostImage = null;
     this.fromListId = null;
     this.cardDropIndex = null;
+    this.$dropZone = null;
   }
 
-  // onDragEnd() {
-  //   this.$ghostImage.remove();
-  //   this.$dragTarget.classList.remove('placeholder');
+  onDragEnd() {
+    this.$ghostImage?.remove();
+    this.$dragTarget?.classList.remove('placeholder');
 
-  //   this.$dragTarget = null;
-  //   this.$ghostImage = null;
-  //   this.fromListId = null;
-  //   this.cardDropIndex = null;
-  // }
+    this.$dragTarget = null;
+    this.$ghostImage = null;
+    this.fromListId = null;
+    this.cardDropIndex = null;
+    this.$dropZone = null;
+  }
 
   render() {
     this.addEvent('click', '.add-card-btn', this.displayAddCardForm.bind(this.props));
@@ -262,7 +267,7 @@ class List extends Component {
     this.addEvent('drag', '.list-wrapper', this.onDrag.bind(this.props));
     this.addEvent('dragover', '.list-wrapper', this.onDragOver.bind(this.props));
     this.addEvent('drop', '.list-wrapper', this.onDrop.bind(this.props));
-    // this.addEvent('dragend', '.list-wrapper', this.onDragEnd.bind(this.props));
+    this.addEvent('dragend', '.list-wrapper', this.onDragEnd.bind(this.props));
 
     const { lists } = this.props.state;
 
