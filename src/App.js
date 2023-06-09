@@ -5,33 +5,38 @@ import Board from './components/Board.js';
 import Modal from './components/Modal.js';
 
 class App extends Component {
-  state = {
+  state = JSON.parse(localStorage.getItem('trello-state')) ?? {
     lists: [
       {
         id: 0,
         title: 'Things to do',
         cards: [
-          { cardId: 0, cardTitle: 'JavaScript', description: 'This is JavaScript', isEditing: false },
-          { cardId: 1, cardTitle: 'Trello', description: 'This is Trello!', isEditing: false },
+          { cardId: 0, cardTitle: 'Deep Dive', description: 'Finish summarizing remaining chapters', isEditing: false },
+          {
+            cardId: 1,
+            cardTitle: 'Project Migration',
+            description: '@Team Hoisiting - migrate Mychelin Guide project to TypeScript',
+            isEditing: false,
+          },
         ],
         isAdding: false,
       },
       {
         id: 1,
-        title: 'TRELLO 조지기',
+        title: 'Personal',
         cards: [
-          { cardId: 0, cardTitle: 'Practice Trello', description: '', isEditing: false },
-          { cardId: 1, cardTitle: '로고 쓸까말까', description: '', isEditing: false },
+          { cardId: 0, cardTitle: 'Daily workout', description: 'legs/shoulders', isEditing: false },
+          { cardId: 1, cardTitle: 'Coffee with Paul', description: '', isEditing: false },
         ],
         isAdding: false,
       },
       {
         id: 2,
-        title: '집가서 할거',
+        title: 'Complete Tasks',
         cards: [
-          { cardId: 0, cardTitle: 'Practice React', description: '', isEditing: false },
-          { cardId: 1, cardTitle: 'Svelte', description: '스벨트는 언제배운담...', isEditing: false },
-          { cardId: 2, cardTitle: 'CSS', description: '사실 CSS가 제일 어려움', isEditing: false },
+          { cardId: 0, cardTitle: 'Trello', description: 'Finished on 23/06/09 F', isEditing: false },
+          { cardId: 1, cardTitle: 'Clean the house', description: '', isEditing: false },
+          { cardId: 2, cardTitle: 'weekly TypeScript study', description: '', isEditing: false },
         ],
         isAdding: false,
       },

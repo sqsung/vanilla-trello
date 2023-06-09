@@ -12,6 +12,9 @@ class Component {
     this.state = { ...this.state, ...newState };
 
     render();
+
+    // save state to localStorage
+    localStorage.setItem('trello-state', JSON.stringify(this.state));
   }
 
   /** @abstract */
