@@ -50,7 +50,7 @@ class Modal extends Component {
     const { open, listId, cardId, isTyping } = state.modalInfo;
 
     const list = state.lists.find(list => list.id === +listId);
-    const card = list?.cards.find(card => card.cardId === +cardId);
+    const card = list?.cards?.find(card => card.cardId === +cardId);
 
     // prettier-ignore
     return `
