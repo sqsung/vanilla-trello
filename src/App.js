@@ -29,7 +29,7 @@ class App extends Component {
         id: 2,
         title: '집가서 할거',
         cards: [
-          { cardId: 0, cardTitle: 'Practice React', description: '' },
+          { cardId: 0, cardTitle: 'Practice React', description: '', isEditing: false },
           { cardId: 1, cardTitle: 'Svelte', description: '스벨트는 언제배운담...', isEditing: false },
           { cardId: 2, cardTitle: 'CSS', description: '사실 CSS가 제일 어려움', isEditing: false },
         ],
