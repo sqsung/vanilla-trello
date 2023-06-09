@@ -192,7 +192,7 @@ class List extends Component {
   /**
    * when draggged element is dropped, update state
    * re-initialize class properties related to drag event
-   * update state
+   * when card element is being dragged, must consider when the card is moved within the same list and else
    */
   onDrop() {
     this.$ghostImage.remove();
@@ -228,10 +228,13 @@ class List extends Component {
       const addedToListCards = lists.find(({ id }) => +id === toListId).cards;
       addedToListCards.splice(this.cardDropIndex || 0, 0, targetCard);
 
-      const _addedToListCards = addedToListCards.map((card, idx) => ({ ...card, cardId: idx }));
-      const _filteredFromListCards = filteredFromListCards.map((card, idx) => ({ ...card, cardId: idx }));
+      const swappedCards = filteredFromListCards.slice();
+      swappedCards.splice(this.cardDropIndex || 0, 0, targetCard);
 
+      const _filteredFromListCards = filteredFromListCards.map((card, idx) => ({ ...card, cardId: idx }));
+      const _addedToListCards = addedToListCards.map((card, idx) => ({ ...card, cardId: idx }));
       const newLists = lists.map(list => {
+        if (+list.id === fromListId && fromListId === toListId) return { ...list, cards: swappedCards };
         if (+list.id === fromListId) return { ...list, cards: _filteredFromListCards };
         if (+list.id === toListId) return { ...list, cards: _addedToListCards };
 
