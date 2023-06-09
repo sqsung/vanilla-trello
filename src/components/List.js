@@ -136,7 +136,7 @@ class List extends Component {
      * 2. go through the lists and change their data-ids to fit their new order
      */
     if (this.$dragTarget.matches('.list-content')) {
-      if ($dropZone === this.$dragTarget) return;
+      if ($dropZone === this.$dragTarget || !$dropZone.draggable) return;
 
       const [fromId, toId] = [
         +this.$dragTarget.closest('.list-wrapper').dataset.id,
