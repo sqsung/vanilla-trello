@@ -200,6 +200,8 @@ class List extends Component {
 
     if (!this.$dropZone) return;
 
+    console.log('Alert: Drag Ended,', this.$dragTarget);
+
     // condition 1. when dragTarget is a list element
     if (this.$dragTarget.matches('.list-content')) {
       const [fromId, toId] = [this.fromListId, +this.$dropZone.closest('.list-wrapper').dataset.id];
