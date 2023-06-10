@@ -129,7 +129,7 @@ class List extends Component {
 
     e.preventDefault();
 
-    this.$dropZone = !$dropZone?.closest('.list-content') ? null : e.target;
+    this.$dropZone = $dropZone ? e.target : null;
 
     if (!$dropZone) return;
 
@@ -202,8 +202,7 @@ class List extends Component {
 
     // condition 1. when dragTarget is a list element
     if (this.$dragTarget.matches('.list-content')) {
-      const fromId = this.fromListId;
-      const toId = +this.$dropZone.closest('.list-wrapper').dataset.id;
+      const [fromId, toId] = [this.fromListId, +this.$dropZone.closest('.list-wrapper').dataset.id];
       const { lists } = this.state;
 
       const temp = lists[fromId];
@@ -251,17 +250,6 @@ class List extends Component {
     this.$dropZone = null;
   }
 
-  onDragEnd() {
-    this.$ghostImage?.remove();
-    this.$dragTarget?.classList.remove('placeholder');
-
-    this.$dragTarget = null;
-    this.$ghostImage = null;
-    this.fromListId = null;
-    this.cardDropIndex = null;
-    this.$dropZone = null;
-  }
-
   render() {
     this.addEvent('click', '.add-card-btn', this.displayAddCardForm.bind(this.props));
     this.addEvent('click', '.add-card>button[type="button"]', this.closeAddCardForm.bind(this.props));
@@ -270,8 +258,7 @@ class List extends Component {
     this.addEvent('dragstart', '.list-wrapper', this.onDragStart.bind(this.props));
     this.addEvent('drag', '.list-wrapper', this.onDrag.bind(this.props));
     this.addEvent('dragover', '.list-wrapper', this.onDragOver.bind(this.props));
-    this.addEvent('drop', '.list-wrapper', this.onDrop.bind(this.props));
-    this.addEvent('dragend', '.list-wrapper', this.onDragEnd.bind(this.props));
+    this.addEvent('dragend', '.list-wrapper', this.onDrop.bind(this.props));
 
     const { lists } = this.props.state;
 
